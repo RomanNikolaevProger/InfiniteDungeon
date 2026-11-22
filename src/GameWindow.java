@@ -15,6 +15,7 @@ public class GameWindow extends JFrame implements KeyListener {
 
             if (GP.StageID==0) {
                 if (MouseXR > 864 && MouseXR < 1056 && MouseYR > 305 && MouseYR < 381) {
+                    GP.SetTiles();
                     GP.StageID = 1;
                     repaint();
                 }
@@ -32,6 +33,7 @@ public class GameWindow extends JFrame implements KeyListener {
                         repaint();
                     }
                     if (MouseXR > 1028 && MouseXR < 1220 && MouseYR > 705 && MouseYR < 781) {
+                        GP.SetTiles();
                         GP.StageID = -1;
                         repaint();
                     }
