@@ -96,7 +96,7 @@ public class Painter extends JPanel{
                         g.drawImage(TileImages[Tiles[j][i]],i*64,j*64,null);
                     }
                 }
-                g.drawImage(PlayerStand,GP.PlayerX-26,GP.PlayerY-56,null);
+                g.drawImage(PlayerStand,(int)Math.round(GP.PlayerX-26),(int)Math.round(GP.PlayerY-56),null);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

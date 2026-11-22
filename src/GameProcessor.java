@@ -9,10 +9,18 @@ public class GameProcessor {
     boolean PressedD;
     boolean PressedS;
     boolean PressedW;
-    int Room = 7;
-    int PlayerX = 980;
-    int PlayerY = 540;
-    int Speed = 10;
+    boolean PressedC;
+    boolean PressedCPreviousTick;
+    int RoomX;
+    int RoomY;
+    int[][] Dungeon = new int[5][5];
+    double PlayerX = 980;
+    double PlayerY = 540;
+    double PlayerSpeedX = 0;
+    double PlayerSpeedY = 0;
+    double Inertion = 0.5;
+    double DashInertion = 0.65;
+    double Speed = 10;  // (MaxSpeed+Speed)*Inertion=MaxSpeed => MaxSpeed = Speed*Inertion/(1-Inertion), Speed = MaxSpeed*(1-Inertion)/Inertion
     int[][] Tiles = new int[29][17];
 
     RoomReader Rooms = new RoomReader();
@@ -22,62 +30,105 @@ public class GameProcessor {
     }
     public void SetTiles() {
         try {
-            System.arraycopy(Rooms.ReadRoom(Room), 0, Tiles, 0, 17);
+            System.arraycopy(Rooms.ReadRoom(Dungeon[RoomY][RoomX]), 0, Tiles, 0, 17);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public void GenerateDungeon() {
+        DungeonGenerator DG = new DungeonGenerator();
+        Dungeon = DG.CreateDungeon(11,11);
+        RoomX = 11/2;
+        RoomY = 11/2;
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < 11; j++) {
+                System.out.print(Dungeon[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+
+
     public void tick() {
         if (StageID==-1) {
-            if (PlayerX > 1824) {
+            if (PlayerX+PlayerSpeedX > 1824) {
                 PlayerX = 32;
-                Room++;
+                RoomX++;
+                System.out.println(RoomX+" "+RoomY);
                 SetTiles();
             }
-            if (PlayerX < 32) {
+            if (PlayerX+PlayerSpeedX < 32) {
                 PlayerX = 1824;
-                Room--;
+                RoomX--;
+                System.out.println(RoomX+" "+RoomY);
                 SetTiles();
             }
-            if (PlayerY > 1056) {
+            if (PlayerY+PlayerSpeedY > 1056) {
                 PlayerY = 32;
+                RoomY ++;
+                System.out.println(RoomX+" "+RoomY);
+                SetTiles();
             }
-            if (PlayerY < 32) {
+            if (PlayerY+PlayerSpeedY < 32) {
                 PlayerY = 1056;
+                RoomY --;
+                System.out.println(RoomX+" "+RoomY);
+                SetTiles();
             }
+
+
             if (PressedA) {
-                /*if (Tiles[(PlayerY+12)/64][(PlayerX-18-Speed)/64]!=2 || Tiles[(PlayerY-12)/64][(PlayerX-18-Speed)/64]!=2) {
-                    PlayerX = (PlayerX-18-Speed)/64*64+19+64;
-                } else {
-                    PlayerX -= Speed;
-                }*/
-                PlayerX -= Speed;
+                PlayerSpeedX-=Speed;
+                if (PressedC && !(PressedCPreviousTick)) {
+                    PlayerSpeedX = -90;
+                }
             }
             if (PressedD) {
-                /*if (Tiles[(PlayerY+12)/64][(PlayerX+18+Speed)/64]!=2 || Tiles[(PlayerY-12)/64][(PlayerX+18+Speed)/64]!=2) {
-                    PlayerX = (PlayerX+18+Speed)/64*64-19;
-                } else {
-                    PlayerX += Speed;
-                }*/
-                PlayerX += Speed;
+                PlayerSpeedX += Speed;
+                if (PressedC && !(PressedCPreviousTick)) {
+                    PlayerSpeedX = 90;
+                }
             }
             if (PressedS) {
-                /*if (Tiles[(PlayerY+12+Speed)/64][(PlayerX+18)/64]!=2 || Tiles[(PlayerY+12+Speed)/64][(PlayerX-18)/64]!=2) {
-                    PlayerY = (PlayerY+12+Speed)/64*64-13;
-                } else {
-                    PlayerY += Speed;
-                }*/
-                PlayerY += Speed;
+                PlayerSpeedY += Speed;
+                if (PressedC && !(PressedCPreviousTick)) {
+                    PlayerSpeedY = 90;
+                }
             }
             if (PressedW) {
-                /* if (Tiles[(PlayerY-12-Speed)/64][(PlayerX+18)/64]!=2 || Tiles[(PlayerY-12-Speed)/64][(PlayerX-18)/64]!=2) {
-                    PlayerY = (PlayerY-12-Speed)/64*64+13+64;
-                } else {
-                    PlayerY -= Speed;
-                }*/
-                PlayerY -= Speed;
+                PlayerSpeedY -= Speed;
+                if (PressedC && !(PressedCPreviousTick)) {
+                    PlayerSpeedY = -90;
+                }
             }
+            if (Math.abs(PlayerSpeedX) < 1) {
+                PlayerSpeedX = 0;
+            } else {
+                if (Math.abs(PlayerSpeedX) > 60) {
+                    PlayerSpeedX *= DashInertion;
+                } else {
+                    PlayerSpeedX *=Inertion;
+                }
+            }
+            if (Math.abs(PlayerSpeedY) < 1) {
+                PlayerSpeedY = 0;
+            } else {
+                if (Math.abs(PlayerSpeedY) > 60) {
+                    PlayerSpeedY *= DashInertion;
+                } else {
+                    PlayerSpeedY *=Inertion;
+                }
+            }
+            PressedCPreviousTick = PressedC;
+            /*if (Tiles[Math.min(Math.max((int)Math.round(PlayerY+12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY+12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX-18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX-18)/64,0),29)]!=2) {
+                PlayerSpeedX=0;
+            }
+            if (Tiles[Math.min(Math.max((int)Math.round(PlayerY+12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY+12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX-18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX-18)/64,0),29)]!=2) {
+                PlayerSpeedY=0;
+            }*/
+            PlayerX+=PlayerSpeedX;
+            PlayerY+=PlayerSpeedY;
         }
     }
 }

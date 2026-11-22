@@ -33,6 +33,7 @@ public class GameWindow extends JFrame implements KeyListener {
                         repaint();
                     }
                     if (MouseXR > 1028 && MouseXR < 1220 && MouseYR > 705 && MouseYR < 781) {
+                        GP.GenerateDungeon();
                         GP.SetTiles();
                         GP.StageID = -1;
                         repaint();
@@ -114,6 +115,9 @@ public class GameWindow extends JFrame implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_W) {
             GP.PressedW = true;
         }
+        if (e.getKeyCode() == KeyEvent.VK_C) {
+            GP.PressedC = true;
+        }
     }
 
     @Override
@@ -129,6 +133,9 @@ public class GameWindow extends JFrame implements KeyListener {
         }
         if (e.getKeyCode() == KeyEvent.VK_W) {
             GP.PressedW = false;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_C) {
+            GP.PressedC = false;
         }
     }
 

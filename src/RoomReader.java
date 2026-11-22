@@ -20,6 +20,4 @@ public class RoomReader {
         return arr;
     }
 
-
-
 }
