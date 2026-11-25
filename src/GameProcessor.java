@@ -10,10 +10,12 @@ public class GameProcessor {
     boolean PressedS;
     boolean PressedW;
     boolean PressedC;
+    boolean PressedE;
     boolean PressedCPreviousTick;
     int RoomX;
     int RoomY;
     int[][] Dungeon = new int[5][5];
+    boolean[][] DungeonInteraction = new boolean[5][5];
     double PlayerX = 980;
     double PlayerY = 540;
     double PlayerSpeedX = 0;
@@ -31,6 +33,9 @@ public class GameProcessor {
     public void SetTiles() {
         try {
             System.arraycopy(Rooms.ReadRoom(Dungeon[RoomY][RoomX]), 0, Tiles, 0, 17);
+            if (DungeonInteraction[RoomY][RoomX] && Dungeon[RoomY][RoomX] < 45 && Dungeon[RoomY][RoomX] > 29) {
+                Tiles[8][14] = 13;
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -38,11 +43,14 @@ public class GameProcessor {
 
     public void GenerateDungeon() {
         DungeonGenerator DG = new DungeonGenerator();
-        Dungeon = DG.CreateDungeon(11,11);
-        RoomX = 11/2;
-        RoomY = 11/2;
-        for (int i = 0; i < 11; i++) {
-            for (int j = 0; j < 11; j++) {
+        DungeonInteraction = new boolean[5][5];
+        Dungeon = DG.CreateDungeon(5,5);
+        RoomX = 5/2;
+        RoomY = 5/2;
+        PlayerX = 980;
+        PlayerY = 540;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 System.out.print(Dungeon[i][j]+" ");
             }
             System.out.println();
@@ -121,12 +129,24 @@ public class GameProcessor {
                 }
             }
             PressedCPreviousTick = PressedC;
-            /*if (Tiles[Math.min(Math.max((int)Math.round(PlayerY+12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY+12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX-18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX-18)/64,0),29)]!=2) {
+            if (PressedE) {
+                int PlayerTileY = Math.min(Math.max((int)Math.round(PlayerY)/64,0),16);
+                int PlayerTileX = Math.min(Math.max((int)Math.round(PlayerX)/64,0),28);
+                if (Tiles[PlayerTileY][PlayerTileX-1] == 12 || Tiles[PlayerTileY][PlayerTileX+1] == 12 || Tiles[PlayerTileY-1][PlayerTileX] == 12 || Tiles[PlayerTileY+1][PlayerTileX] == 12) {
+                    Tiles[8][14] = 13;
+                    DungeonInteraction[RoomY][RoomX] = true;
+                }
+                if (Tiles[PlayerTileY][PlayerTileX-1] == 11 || Tiles[PlayerTileY][PlayerTileX+1] == 11 || Tiles[PlayerTileY-1][PlayerTileX] == 11 || Tiles[PlayerTileY+1][PlayerTileX] == 11) {
+                    GenerateDungeon();
+                    SetTiles();
+                }
+            }
+            if (Tiles[Math.min(Math.max((int)Math.round(PlayerY+12)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX+18)/64,0),28)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX+18)/64,0),28)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY+12)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX-18)/64,0),28)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX+PlayerSpeedX-18)/64,0),28)]!=2) {
                 PlayerSpeedX=0;
             }
-            if (Tiles[Math.min(Math.max((int)Math.round(PlayerY+12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX+18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY+12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX-18)/64,0),29)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12+PlayerSpeedY)/64,0),17)][Math.min(Math.max((int)Math.round(PlayerX-18)/64,0),29)]!=2) {
+            if (Tiles[Math.min(Math.max((int)Math.round(PlayerY+12+PlayerSpeedY)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX+18)/64,0),28)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12+PlayerSpeedY)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX+18)/64,0),28)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY+12+PlayerSpeedY)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX-18)/64,0),28)]!=2 || Tiles[Math.min(Math.max((int)Math.round(PlayerY-12+PlayerSpeedY)/64,0),16)][Math.min(Math.max((int)Math.round(PlayerX-18)/64,0),28)]!=2) {
                 PlayerSpeedY=0;
-            }*/
+            }
             PlayerX+=PlayerSpeedX;
             PlayerY+=PlayerSpeedY;
         }

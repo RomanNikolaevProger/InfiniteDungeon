@@ -118,6 +118,9 @@ public class GameWindow extends JFrame implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_C) {
             GP.PressedC = true;
         }
+        if (e.getKeyCode() == KeyEvent.VK_E) {
+            GP.PressedE = true;
+        }
     }
 
     @Override
@@ -136,6 +139,9 @@ public class GameWindow extends JFrame implements KeyListener {
         }
         if (e.getKeyCode() == KeyEvent.VK_C) {
             GP.PressedC = false;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_E) {
+            GP.PressedE = false;
         }
     }
 

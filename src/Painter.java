@@ -34,7 +34,10 @@ public class Painter extends JPanel{
     Image WallTopLeftUp = ImageIO.read(new File("src/assets/textures/tiles/WallTopLeftUp.png"));
     Image WallTopRightDown = ImageIO.read(new File("src/assets/textures/tiles/WallTopRightDown.png"));
     Image WallTopRightUp = ImageIO.read(new File("src/assets/textures/tiles/WallTopRightUp.png"));
-    Image[] TileImages = {Block,Wall,Floor,WallTopDown,WallTopLeft,WallTopUp,WallTopRight,WallTopLeftDown,WallTopLeftUp,WallTopRightDown,WallTopRightUp};
+    Image Portal = ImageIO.read(new File("src/assets/textures/tiles/Portal.png"));
+    Image ChestOpened = ImageIO.read(new File("src/assets/textures/tiles/ChestOpened.png"));
+    Image ChestClosed = ImageIO.read(new File("src/assets/textures/tiles/ChestClosed.png"));
+    Image[] TileImages = {Block,Wall,Floor,WallTopDown,WallTopLeft,WallTopUp,WallTopRight,WallTopLeftDown,WallTopLeftUp,WallTopRightDown,WallTopRightUp,Portal,ChestClosed,ChestOpened};
     Image PlayerStand = ImageIO.read(new File("src/assets/textures/entities/PlayerStand.png"));
 
 
