@@ -41,16 +41,16 @@ public class GameProcessor {
         }
     }
 
-    public void GenerateDungeon() {
+    public void GenerateDungeon(int SizeX, int SizeY) {
         DungeonGenerator DG = new DungeonGenerator();
-        DungeonInteraction = new boolean[5][5];
-        Dungeon = DG.CreateDungeon(5,5);
-        RoomX = 5/2;
-        RoomY = 5/2;
+        DungeonInteraction = new boolean[SizeY][SizeX];
+        Dungeon = DG.CreateDungeon(SizeX,SizeY);
+        RoomX = SizeX/2;
+        RoomY = SizeY/2;
         PlayerX = 980;
         PlayerY = 540;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < SizeY; i++) {
+            for (int j = 0; j < SIzeX; j++) {
                 System.out.print(Dungeon[i][j]+" ");
             }
             System.out.println();
@@ -137,7 +137,7 @@ public class GameProcessor {
                     DungeonInteraction[RoomY][RoomX] = true;
                 }
                 if (Tiles[PlayerTileY][PlayerTileX-1] == 11 || Tiles[PlayerTileY][PlayerTileX+1] == 11 || Tiles[PlayerTileY-1][PlayerTileX] == 11 || Tiles[PlayerTileY+1][PlayerTileX] == 11) {
-                    GenerateDungeon();
+                    GenerateDungeon(5,5);
                     SetTiles();
                 }
             }
