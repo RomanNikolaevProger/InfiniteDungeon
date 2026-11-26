@@ -50,7 +50,7 @@ public class GameProcessor {
         PlayerX = 980;
         PlayerY = 540;
         for (int i = 0; i < SizeY; i++) {
-            for (int j = 0; j < SIzeX; j++) {
+            for (int j = 0; j < SizeX; j++) {
                 System.out.print(Dungeon[i][j]+" ");
             }
             System.out.println();
