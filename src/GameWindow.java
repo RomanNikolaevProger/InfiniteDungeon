@@ -33,7 +33,7 @@ public class GameWindow extends JFrame implements KeyListener {
                         repaint();
                     }
                     if (MouseXR > 1028 && MouseXR < 1220 && MouseYR > 705 && MouseYR < 781) {
-                        GP.GenerateDungeon();
+                        GP.GenerateDungeon(5,5);
                         GP.SetTiles();
                         GP.StageID = -1;
                         repaint();
